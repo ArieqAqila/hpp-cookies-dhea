@@ -145,6 +145,36 @@
     color:var(--rose); font-size:16px; font-weight:800; cursor:pointer; flex:none;
     display:flex; align-items:center; justify-content:center;
   }
+  .row-edit{
+    width:30px; height:30px; border-radius:50%; border:none; background:var(--amber-light);
+    color:var(--amber); font-size:14px; cursor:pointer; flex:none;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  /* Edit modal */
+  .modal-overlay{
+    display:none; position:fixed; inset:0; background:rgba(0,0,0,.55);
+    z-index:100; align-items:center; justify-content:center; padding:16px;
+  }
+  .modal-overlay.open{ display:flex; }
+  .modal{
+    background:var(--card-bg); border:1px solid var(--line); border-radius:20px;
+    padding:20px; width:100%; max-width:400px; box-shadow:0 8px 32px rgba(0,0,0,.3);
+  }
+  .modal h3{
+    font-family:'Fraunces', serif; font-size:18px; color:var(--cocoa);
+    margin:0 0 14px; display:flex; align-items:center; gap:8px;
+  }
+  .modal .field{ margin-bottom:10px; }
+  .modal .field label{ font-size:12px; font-weight:700; color:var(--muted); display:block; margin-bottom:4px; }
+  .modal .field input, .modal .field select{
+    width:100%; padding:10px 12px; border-radius:10px; border:1.5px solid var(--line);
+    font-size:15px; font-weight:700; color:var(--ink); background:var(--input-bg);
+    font-family:inherit;
+  }
+  .modal .field input:focus, .modal .field select:focus{ outline:none; border-color:var(--amber); }
+  .modal-actions{ display:flex; gap:8px; margin-top:14px; }
+  .modal-actions .btn{ flex:1; }
 
   /* Recipe row */
   .recipe-row{ display:flex; flex-direction:column; gap:8px; padding:10px 0; border-bottom:1px solid var(--line); }
@@ -304,6 +334,47 @@
 
 </div>
 
+<!-- Edit Bahan Modal -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <h3>✏️ Ubah Data Bahan</h3>
+    <div class="field">
+      <label>Nama Bahan</label>
+      <input type="text" id="editNama" placeholder="Nama bahan">
+    </div>
+    <div class="field">
+      <label>Harga Beli (Rp)</label>
+      <input type="number" id="editHarga" placeholder="Harga beli" inputmode="numeric">
+    </div>
+    <div class="field">
+      <label>Total dalam Satuan Pakai</label>
+      <input type="number" id="editTotal" placeholder="Total" inputmode="numeric">
+    </div>
+    <div class="field">
+      <label>Satuan</label>
+      <select id="editSatuan">
+        <option value="gram">gram</option>
+        <option value="butir">butir</option>
+        <option value="pcs">pcs</option>
+        <option value="lembar">lembar</option>
+        <option value="ml">ml</option>
+        <option value="kg">kg</option>
+        <option value="sdm">sdm</option>
+        <option value="sdt">sdt</option>
+        <option value="__custom">satuan lain...</option>
+      </select>
+    </div>
+    <div class="field" id="editSatuanCustomWrap" style="display:none;">
+      <label>Tulis Satuan Baru</label>
+      <input type="text" id="editSatuanCustom" placeholder="Satuan kustom">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="btnEditCancel">Batal</button>
+      <button class="btn btn-amber" id="btnEditSave">Simpan</button>
+    </div>
+  </div>
+</div>
+
 <div class="save-status" id="saveStatus">Tersimpan ✓</div>
 
 <script>
@@ -455,10 +526,18 @@ function renderBahanList(){
         <div class="meta">${fmtRupiah(b.harga)} / ${b.total} ${b.satuan}</div>
       </div>
       <div class="row-price">${fmtRupiah(ppu)}<span class="badge-unit">/${b.satuan}</span></div>
+      <button class="row-edit" data-idx="${idx}" title="Ubah bahan">✏️</button>
       <button class="row-del" data-idx="${idx}" title="Hapus bahan">×</button>
     `;
     container.appendChild(row);
   });
+  container.querySelectorAll('.row-edit').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.dataset.idx);
+      openEditModal(idx);
+    });
+  });
+
   container.querySelectorAll('.row-del').forEach(btn => {
     btn.addEventListener('click', () => {
       const idx = parseInt(btn.dataset.idx);
@@ -672,6 +751,74 @@ document.getElementById('btnAddBahan').addEventListener('click', () => {
   document.getElementById('newSatuanCustom').value = '';
   document.getElementById('newSatuanCustom').style.display = 'none';
 
+  renderBahanList();
+  renderRecipeList();
+  recalc();
+  persist();
+});
+
+// ================= EDIT MODAL =================
+let editIdx = -1;
+
+function openEditModal(idx){
+  editIdx = idx;
+  const b = bahanData[idx];
+  document.getElementById('editNama').value = b.nama;
+  document.getElementById('editHarga').value = b.harga;
+  document.getElementById('editTotal').value = b.total;
+
+  const stdSatuan = ['gram','butir','pcs','lembar','ml','kg','sdm','sdt'];
+  const sel = document.getElementById('editSatuan');
+  if(stdSatuan.includes(b.satuan)){
+    sel.value = b.satuan;
+    document.getElementById('editSatuanCustomWrap').style.display = 'none';
+  } else {
+    sel.value = '__custom';
+    document.getElementById('editSatuanCustom').value = b.satuan;
+    document.getElementById('editSatuanCustomWrap').style.display = '';
+  }
+
+  document.getElementById('editModal').classList.add('open');
+}
+
+document.getElementById('editSatuan').addEventListener('change', e => {
+  document.getElementById('editSatuanCustomWrap').style.display =
+    e.target.value === '__custom' ? '' : 'none';
+});
+
+document.getElementById('btnEditCancel').addEventListener('click', () => {
+  document.getElementById('editModal').classList.remove('open');
+});
+
+document.getElementById('editModal').addEventListener('click', e => {
+  if(e.target === document.getElementById('editModal')){
+    document.getElementById('editModal').classList.remove('open');
+  }
+});
+
+document.getElementById('btnEditSave').addEventListener('click', () => {
+  if(editIdx < 0) return;
+  const nama = document.getElementById('editNama').value.trim();
+  const harga = parseFloat(document.getElementById('editHarga').value);
+  const total = parseFloat(document.getElementById('editTotal').value);
+  let satuan = document.getElementById('editSatuan').value;
+  if(satuan === '__custom'){
+    satuan = document.getElementById('editSatuanCustom').value.trim();
+  }
+
+  if(!nama){ alert('Nama bahan tidak boleh kosong.'); return; }
+  if(!harga || harga <= 0){ alert('Isi harga beli dengan benar.'); return; }
+  if(!total || total <= 0){ alert('Isi total dengan benar.'); return; }
+  if(!satuan){ alert('Pilih atau isi satuan.'); return; }
+
+  const oldNama = bahanData[editIdx].nama;
+  // Update resepData kalau nama berubah
+  if(oldNama !== nama){
+    resepData.forEach(r => { if(r.nama === oldNama) r.nama = nama; });
+  }
+
+  bahanData[editIdx] = { nama, harga, total, satuan };
+  document.getElementById('editModal').classList.remove('open');
   renderBahanList();
   renderRecipeList();
   recalc();
