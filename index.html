@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>HPP Cookies</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Nunito+Sans:wght@400;600;700;800&display=swap');
+
+  :root{
+    /* Dark theme (default) */
+    --paper: #1C1612;
+    --paper-2: #2A2018;
+    --ink: #F1E6D8;
+    --cocoa: #E3B98A;
+    --amber: #E0A458;
+    --amber-light: #4A3826;
+    --sage: #9CC084;
+    --sage-light: #2E3B26;
+    --rose: #E2897E;
+    --rose-light: #4A2A26;
+    --line: #3D332A;
+    --card-bg: #2A211A;
+    --input-bg: #1C1612;
+    --muted: #B8A48C;
+    --faint: #6B5C4C;
+    --hero-a: #4A3326;
+    --hero-b: #241710;
+  }
+
+  [data-theme="light"]{
+    --paper: #FBF6EE;
+    --paper-2: #F3EAD9;
+    --ink: #3E2C22;
+    --cocoa: #6B4A38;
+    --amber: #C8893A;
+    --amber-light: #F0DCBE;
+    --sage: #7E9A6E;
+    --sage-light: #E4ECDD;
+    --rose: #D9695F;
+    --rose-light: #F7E3E0;
+    --line: #E3D7C5;
+    --card-bg: #ffffff;
+    --input-bg: #FBF6EE;
+    --muted: #A38E76;
+    --faint: #C2AD93;
+    --hero-a: #6B4A38;
+    --hero-b: #543A2C;
+  }
+
+  *{ box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+  html,body{ margin:0; padding:0; }
+  body{
+    font-family:'Nunito Sans', sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    min-height:100vh;
+    padding-bottom:40px;
+    transition: background .2s, color .2s;
+  }
+
+  .wrap{ max-width:560px; margin:0 auto; padding:20px 16px 0; }
+
+  header{ text-align:center; padding:8px 0 18px; position:relative; }
+  .theme-toggle{
+    position:absolute; top:6px; right:0; width:38px; height:38px;
+    border-radius:50%; border:1.5px solid var(--line); background:var(--card-bg);
+    color:var(--ink); font-size:16px; cursor:pointer; display:flex;
+    align-items:center; justify-content:center; transition:.15s;
+  }
+  header .eyebrow{
+    font-size:11px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--amber); font-weight:800; margin-bottom:4px;
+  }
+  header h1{
+    font-family:'Fraunces', serif; font-weight:700; font-size:30px;
+    margin:0; color:var(--cocoa);
+  }
+  header .sub{ font-size:13px; color:var(--muted); margin-top:4px; }
+
+  /* Tabs */
+  .tabs{
+    display:flex; gap:6px; background:var(--paper-2); border-radius:14px;
+    padding:4px; margin-bottom:18px;
+  }
+  .tab{
+    flex:1; text-align:center; padding:10px 8px; border-radius:11px;
+    font-weight:700; font-size:13.5px; color:var(--muted); cursor:pointer;
+    border:none; background:none; font-family:inherit; transition:.15s;
+  }
+  .tab.active{ background:var(--cocoa); color:var(--paper); box-shadow:0 2px 8px rgba(107,74,56,.25); }
+
+  /* Cards */
+  .card{
+    background:var(--card-bg); border:1px solid var(--line); border-radius:18px;
+    padding:16px; margin-bottom:14px; box-shadow:0 1px 2px rgba(60,40,20,.03);
+    transition: background .2s, border-color .2s;
+  }
+  .card h2{
+    font-family:'Fraunces', serif; font-size:18px; margin:0 0 4px; color:var(--cocoa);
+    display:flex; align-items:center; gap:8px;
+  }
+  .card .hint{ font-size:12px; color:var(--muted); margin:0 0 12px; line-height:1.5; }
+
+  /* Result hero */
+  .hero{
+    background: linear-gradient(135deg, var(--hero-a), var(--hero-b));
+    border-radius:20px; padding:20px; color:#F1E6D8; margin-bottom:14px;
+    position:relative; overflow:hidden; transition: background .2s;
+  }
+  .hero::after{
+    content:''; position:absolute; right:-30px; top:-30px; width:140px; height:140px;
+    border-radius:50%; background:rgba(255,255,255,.05);
+  }
+  .hero .label{ font-size:11px; letter-spacing:.15em; text-transform:uppercase; opacity:.65; font-weight:700; }
+  .hero .big{ font-family:'Fraunces', serif; font-size:38px; font-weight:700; margin:2px 0 14px; }
+  .hero-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .hero-stat{ background:rgba(255,255,255,.08); border-radius:12px; padding:10px 12px; }
+  .hero-stat .l{ font-size:11px; opacity:.65; font-weight:600; }
+  .hero-stat .v{ font-size:18px; font-weight:800; margin-top:2px; font-family:'Fraunces', serif; }
+  .hero-stat.profit .v{ color:#BFE2AE; }
+
+  /* Settings row */
+  .settings{ display:flex; gap:10px; }
+  .field{ flex:1; }
+  .field label{ font-size:12px; font-weight:700; color:var(--muted); display:block; margin-bottom:4px; }
+  .field input{
+    width:100%; padding:10px 12px; border-radius:10px; border:1.5px solid var(--line);
+    font-size:15px; font-weight:700; color:var(--ink); background:var(--input-bg); font-family:inherit;
+  }
+  .field input:focus{ outline:none; border-color:var(--amber); }
+
+  /* List items - bahan */
+  .row{
+    display:flex; align-items:center; gap:8px; padding:10px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .row:last-child{ border-bottom:none; }
+  .row-main{ flex:1; min-width:0; }
+  .row-main .name{ font-weight:800; font-size:14.5px; color:var(--ink); }
+  .row-main .meta{ font-size:12px; color:var(--muted); margin-top:1px; }
+  .row-price{ font-weight:800; font-size:13.5px; color:var(--cocoa); text-align:right; white-space:nowrap; }
+  .row-del{
+    width:30px; height:30px; border-radius:50%; border:none; background:var(--rose-light);
+    color:var(--rose); font-size:16px; font-weight:800; cursor:pointer; flex:none;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  /* Recipe row */
+  .recipe-row{ display:flex; flex-direction:column; gap:8px; padding:10px 0; border-bottom:1px solid var(--line); }
+  .recipe-row:last-child{ border-bottom:none; }
+  .recipe-row-top{ display:flex; align-items:center; gap:8px; }
+  .recipe-row-bottom{ display:flex; align-items:center; gap:8px; }
+  .recipe-row select, .recipe-row input{
+    font-family:inherit; border:1.5px solid var(--line); border-radius:10px;
+    padding:9px 10px; font-size:14px; font-weight:700; background:var(--input-bg); color:var(--ink);
+    width:100%; min-width:0;
+  }
+  .recipe-row-top .sel-bahan{ flex:1; min-width:0; }
+  .recipe-row .sel-satuan{ flex:1.1; min-width:0; }
+  .recipe-row .qty{ flex:0.8; min-width:0; text-align:center; }
+  .recipe-row .sub{ flex:1.2; text-align:right; font-weight:800; color:var(--cocoa); font-size:14px; white-space:nowrap; }
+  select:focus, input:focus{ outline:none; border-color:var(--amber); }
+
+  /* Add form */
+  .add-form{ display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+  .add-form input, .add-form select{
+    font-family:inherit; border:1.5px solid var(--line); border-radius:10px;
+    padding:9px 10px; font-size:13.5px; font-weight:600; background:var(--input-bg); color:var(--ink);
+  }
+  .add-form .grow{ flex:1 1 100%; }
+  .add-form .third{ flex:1 1 28%; }
+  .add-form .half{ flex:1 1 47%; }
+
+  .btn{
+    border:none; border-radius:12px; padding:11px 16px; font-weight:800; font-size:14px;
+    font-family:inherit; cursor:pointer; transition:.15s;
+  }
+  .btn-amber{ background:var(--amber); color:#fff; }
+  .btn-amber:hover{ background:#b6772f; }
+  .btn-full{ width:100%; margin-top:10px; }
+  .btn-ghost{ background:var(--paper-2); color:var(--cocoa); }
+
+  .totalbar{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:12px 0 2px; font-family:'Fraunces', serif; font-weight:700; font-size:15px; color:var(--cocoa);
+  }
+  .totalbar .v{ color:var(--rose); }
+
+  .empty{ text-align:center; color:var(--faint); font-size:13px; padding:18px 0; }
+
+  .save-status{
+    position:fixed; bottom:14px; left:50%; transform:translateX(-50%);
+    background:var(--cocoa); color:var(--paper); font-size:12px; font-weight:700;
+    padding:8px 16px; border-radius:999px; opacity:0; transition:opacity .3s;
+    pointer-events:none; box-shadow:0 4px 14px rgba(0,0,0,.15);
+  }
+  .save-status.show{ opacity:1; }
+
+  .badge-unit{
+    display:inline-block; background:var(--amber-light); color:var(--cocoa);
+    font-size:10.5px; font-weight:800; padding:2px 7px; border-radius:6px; margin-left:6px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <button class="theme-toggle" id="themeToggle" title="Ganti tema">☀️</button>
+    <div class="eyebrow">Buku Resep Digital</div>
+    <h1>🍪 HPP Cookies</h1>
+    <div class="sub">Hitung modal & untung tiap resep, otomatis</div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="resep">Resep & HPP</button>
+    <button class="tab" data-tab="bahan">Daftar Bahan</button>
+  </div>
+
+  <!-- ===================== TAB: RESEP ===================== -->
+  <div id="tab-resep">
+
+    <div class="hero">
+      <div class="label">Hasil Per Resep</div>
+      <div class="big" id="heroHpp">Rp 0</div>
+      <div class="hero-grid">
+        <div class="hero-stat">
+          <div class="l">HPP per pcs</div>
+          <div class="v" id="statHppPcs">Rp 0</div>
+        </div>
+        <div class="hero-stat profit">
+          <div class="l">Untung per pcs</div>
+          <div class="v" id="statProfitPcs">Rp 0</div>
+        </div>
+        <div class="hero-stat">
+          <div class="l">Margin</div>
+          <div class="v" id="statMargin">0%</div>
+        </div>
+        <div class="hero-stat profit">
+          <div class="l">Total untung</div>
+          <div class="v" id="statTotalProfit">Rp 0</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>⚙️ Pengaturan</h2>
+      <div class="settings">
+        <div class="field">
+          <label>Hasil jadi (pcs)</label>
+          <input type="number" id="inputYield" inputmode="numeric" value="20">
+        </div>
+        <div class="field">
+          <label>Harga jual / pcs</label>
+          <input type="number" id="inputPrice" inputmode="numeric" value="5000">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>📋 Bahan dalam Resep</h2>
+      <p class="hint">Pilih bahan & satuan, isi kebutuhan. Tap ❌ untuk hapus bahan dari resep.</p>
+      <div id="recipeList"></div>
+      <div class="totalbar">
+        <span>Total HPP Bahan</span>
+        <span class="v" id="recipeTotal">Rp 0</span>
+      </div>
+      <button class="btn btn-amber btn-full" id="btnAddRecipeRow">+ Tambah Bahan ke Resep</button>
+    </div>
+
+  </div>
+
+  <!-- ===================== TAB: BAHAN ===================== -->
+  <div id="tab-bahan" style="display:none;">
+    <div class="card">
+      <h2>📦 Daftar Harga Bahan</h2>
+      <p class="hint">Harga per satuan pakai dihitung otomatis dari harga beli & isi kemasan.</p>
+      <div id="bahanList"></div>
+    </div>
+
+    <div class="card">
+      <h2>➕ Tambah Bahan Baru</h2>
+      <div class="add-form">
+        <input type="text" class="grow" id="newNama" placeholder="Nama bahan, misal: Susu UHT">
+        <input type="number" class="half" id="newHarga" placeholder="Harga beli (Rp)" inputmode="numeric">
+        <input type="number" class="half" id="newTotal" placeholder="Total dalam satuan pakai" inputmode="numeric">
+        <select class="grow" id="newSatuan">
+          <option value="gram">gram</option>
+          <option value="butir">butir</option>
+          <option value="pcs">pcs</option>
+          <option value="lembar">lembar</option>
+          <option value="ml">ml</option>
+          <option value="kg">kg</option>
+          <option value="sdm">sdm</option>
+          <option value="sdt">sdt</option>
+          <option value="__custom">satuan lain...</option>
+        </select>
+        <input type="text" class="grow" id="newSatuanCustom" placeholder="Tulis satuan baru" style="display:none;">
+      </div>
+      <p class="hint" style="margin-top:8px;">Contoh: Susu UHT 1 liter Rp 18.000, dipakai per ml → Harga beli=18000, Total dalam satuan pakai=1000, satuan=ml.</p>
+      <button class="btn btn-amber btn-full" id="btnAddBahan">Simpan Bahan</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="save-status" id="saveStatus">Tersimpan ✓</div>
+
+<script>
+// ====== GANTI URL DI BAWAH INI DENGAN URL WEB APP APPS SCRIPT KAMU ======
+const GSHEET_URL = 'https://script.google.com/macros/s/AKfycbyaYaMqAUw3NKpGAB__rWXA7kj7rvPTKxg8540JBnsko25C8oE6TyBEVdPQLvH0jSio/exec';
+
+const defaultBahan = [
+  {nama:"Terigu", harga:13000, total:1000, satuan:"gram"},
+  {nama:"Maizena", harga:4500, total:100, satuan:"gram"},
+  {nama:"Soda kue", harga:5900, total:81, satuan:"gram"},
+  {nama:"Baking powder", harga:6500, total:45, satuan:"gram"},
+  {nama:"Vanili bubuk", harga:8400, total:20, satuan:"gram"},
+  {nama:"Gula pasir", harga:9000, total:500, satuan:"gram"},
+  {nama:"Garam", harga:2000, total:400, satuan:"gram"},
+  {nama:"Brown sugar Rikoman", harga:46000, total:1000, satuan:"gram"},
+  {nama:"Cocoa powder", harga:40000, total:250, satuan:"gram"},
+  {nama:"Choco chips", harga:37000, total:500, satuan:"gram"},
+  {nama:"Margarin (Pilma)", harga:19500, total:1000, satuan:"gram"},
+  {nama:"Telur", harga:13000, total:8, satuan:"butir"},
+  {nama:"Keju Spreadable", harga:11800, total:150, satuan:"gram"},
+  {nama:"Plastik 9x9", harga:9400, total:100, satuan:"pcs"},
+  {nama:"Baking paper", harga:30000, total:33, satuan:"lembar"},
+  {nama:"Pasta red velvet", harga:6000, total:55, satuan:"ml"},
+  {nama:"Pasta matcha", harga:6000, total:55, satuan:"ml"},
+  {nama:"Cream vanilla", harga:33000, total:1000, satuan:"gram"},
+  {nama:"Coklat batang", harga:16000, total:170, satuan:"gram"},
+  {nama:"Coklat batang putih", harga:16500, total:170, satuan:"gram"},
+];
+
+const defaultResep = [
+  {nama:"Choco chips", satuan:"gram", qty:40},
+  {nama:"Maizena", satuan:"gram", qty:18},
+  {nama:"Soda kue", satuan:"gram", qty:8},
+  {nama:"Baking powder", satuan:"gram", qty:6},
+  {nama:"Vanili bubuk", satuan:"gram", qty:2},
+  {nama:"Gula pasir", satuan:"gram", qty:23},
+  {nama:"Garam", satuan:"gram", qty:2},
+  {nama:"Brown sugar Rikoman", satuan:"gram", qty:121},
+  {nama:"Cocoa powder", satuan:"gram", qty:14},
+  {nama:"Choco chips", satuan:"gram", qty:30},
+  {nama:"Margarin (Pilma)", satuan:"gram", qty:81},
+  {nama:"Terigu", satuan:"gram", qty:155},
+  {nama:"Telur", satuan:"butir", qty:1},
+  {nama:"Keju Spreadable", satuan:"gram", qty:39},
+  {nama:"Plastik 9x9", satuan:"pcs", qty:20},
+  {nama:"Baking paper", satuan:"lembar", qty:4},
+];
+
+const defaultSettings = { yieldPcs: 20, price: 5000, theme: 'dark' };
+
+function applyTheme(theme){
+  document.documentElement.setAttribute('data-theme', theme);
+  document.getElementById('themeToggle').textContent = theme === 'dark' ? '☀️' : '🌙';
+}
+
+let bahanData = [];
+let resepData = [];
+let settings = { ...defaultSettings };
+
+function fmtRupiah(n){
+  if (isNaN(n)) n = 0;
+  return 'Rp ' + Math.round(n).toLocaleString('id-ID');
+}
+
+function pricePerUnit(b){
+  if(!b.harga || !b.total) return 0;
+  return b.harga / b.total;
+}
+
+function getUniqueSatuan(){
+  const set = new Set(['gram','butir','pcs','lembar','ml','kg','sdm','sdt']);
+  bahanData.forEach(b => set.add(b.satuan));
+  return Array.from(set);
+}
+
+function getBahanByNamaSatuan(nama, satuan){
+  return bahanData.find(b => b.nama === nama && b.satuan === satuan)
+      || bahanData.find(b => b.nama === nama);
+}
+
+let saveTimeout;
+function persist(){
+  clearTimeout(saveTimeout);
+  saveTimeout = setTimeout(async () => {
+    try{
+      const payload = { bahan: bahanData, resep: resepData, settings: settings };
+      await fetch(GSHEET_URL, {
+        method: 'POST',
+        mode: 'no-cors', // hindari CORS error dari redirect Apps Script
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // hindari CORS preflight
+        body: JSON.stringify(payload)
+      });
+      showSaveStatus('Tersimpan ke Sheet ✓');
+    }catch(e){
+      console.error('Gagal menyimpan:', e);
+      showSaveStatus('Gagal simpan, cek koneksi ⚠️');
+    }
+  }, 600);
+}
+
+function showSaveStatus(msg){
+  const el = document.getElementById('saveStatus');
+  if(msg) el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(()=> el.classList.remove('show'), 1500);
+}
+
+async function loadData(){
+  showSaveStatus('Memuat data...');
+  try{
+    const res = await fetch(GSHEET_URL);
+    const data = await res.json();
+    bahanData = (data.bahan && data.bahan.length) ? data.bahan : JSON.parse(JSON.stringify(defaultBahan));
+    resepData = (data.resep && data.resep.length) ? data.resep : JSON.parse(JSON.stringify(defaultResep));
+    settings = (data.settings && Object.keys(data.settings).length) ? data.settings : { ...defaultSettings };
+    showSaveStatus('Data dimuat ✓');
+  }catch(e){
+    console.error('Gagal memuat:', e);
+    bahanData = JSON.parse(JSON.stringify(defaultBahan));
+    resepData = JSON.parse(JSON.stringify(defaultResep));
+    settings = { ...defaultSettings };
+    showSaveStatus('Gagal memuat, pakai data default ⚠️');
+  }
+
+  document.getElementById('inputYield').value = settings.yieldPcs;
+  document.getElementById('inputPrice').value = settings.price;
+  applyTheme(settings.theme || 'dark');
+
+  renderBahanList();
+  renderRecipeList();
+  recalc();
+}
+
+// ================= RENDER BAHAN LIST =================
+function renderBahanList(){
+  const container = document.getElementById('bahanList');
+  container.innerHTML = '';
+  if(bahanData.length === 0){
+    container.innerHTML = '<div class="empty">Belum ada bahan. Tambahkan di bawah.</div>';
+    return;
+  }
+  bahanData.forEach((b, idx) => {
+    const ppu = pricePerUnit(b);
+    const row = document.createElement('div');
+    row.className = 'row';
+    row.innerHTML = `
+      <div class="row-main">
+        <div class="name">${b.nama}</div>
+        <div class="meta">${fmtRupiah(b.harga)} / ${b.total} ${b.satuan}</div>
+      </div>
+      <div class="row-price">${fmtRupiah(ppu)}<span class="badge-unit">/${b.satuan}</span></div>
+      <button class="row-del" data-idx="${idx}" title="Hapus bahan">×</button>
+    `;
+    container.appendChild(row);
+  });
+  container.querySelectorAll('.row-del').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.dataset.idx);
+      const nama = bahanData[idx].nama;
+      if(confirm(`Hapus "${nama}" dari daftar bahan?\n\nCatatan: kalau bahan ini masih dipakai di resep, baris resepnya juga akan dihapus.`)){
+        bahanData.splice(idx, 1);
+        resepData = resepData.filter(r => r.nama !== nama);
+        renderBahanList();
+        renderRecipeList();
+        recalc();
+        persist();
+      }
+    });
+  });
+}
+
+// ================= RENDER RECIPE LIST =================
+function renderRecipeList(){
+  const container = document.getElementById('recipeList');
+  container.innerHTML = '';
+  if(resepData.length === 0){
+    container.innerHTML = '<div class="empty">Belum ada bahan di resep. Tap tombol di bawah untuk menambah.</div>';
+    return;
+  }
+  const uniqueSatuan = getUniqueSatuan();
+
+  resepData.forEach((item, idx) => {
+    const row = document.createElement('div');
+    row.className = 'recipe-row';
+
+    const selBahan = document.createElement('select');
+    selBahan.className = 'sel-bahan';
+    bahanData.forEach(b => {
+      const opt = document.createElement('option');
+      opt.value = b.nama;
+      opt.textContent = b.nama;
+      if(b.nama === item.nama) opt.selected = true;
+      selBahan.appendChild(opt);
+    });
+
+    const selSatuan = document.createElement('select');
+    selSatuan.className = 'sel-satuan';
+    uniqueSatuan.forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = s;
+      opt.textContent = s;
+      if(s === item.satuan) opt.selected = true;
+      selSatuan.appendChild(opt);
+    });
+
+    const inputQty = document.createElement('input');
+    inputQty.type = 'number';
+    inputQty.className = 'qty';
+    inputQty.inputMode = 'decimal';
+    inputQty.value = item.qty;
+
+    const sub = document.createElement('div');
+    sub.className = 'sub';
+
+    const delBtn = document.createElement('button');
+    delBtn.className = 'row-del';
+    delBtn.textContent = '×';
+    delBtn.title = 'Hapus dari resep';
+
+    const rowTop = document.createElement('div');
+    rowTop.className = 'recipe-row-top';
+    rowTop.appendChild(selBahan);
+    rowTop.appendChild(delBtn);
+
+    const rowBottom = document.createElement('div');
+    rowBottom.className = 'recipe-row-bottom';
+    rowBottom.appendChild(selSatuan);
+    rowBottom.appendChild(inputQty);
+    rowBottom.appendChild(sub);
+
+    function updateSub(){
+      const b = getBahanByNamaSatuan(selBahan.value, selSatuan.value);
+      const ppu = b ? pricePerUnit(b) : 0;
+      const qty = parseFloat(inputQty.value) || 0;
+      sub.textContent = fmtRupiah(ppu * qty);
+    }
+    updateSub();
+
+    selBahan.addEventListener('change', () => {
+      resepData[idx].nama = selBahan.value;
+      // auto-pick a matching satuan if current one doesn't exist for this bahan
+      const b = bahanData.find(x => x.nama === selBahan.value);
+      if(b && !uniqueSatuan.includes(selSatuan.value)){
+        selSatuan.value = b.satuan;
+      }
+      if(b){
+        const exists = bahanData.find(x => x.nama === selBahan.value && x.satuan === selSatuan.value);
+        if(!exists){ selSatuan.value = b.satuan; resepData[idx].satuan = b.satuan; }
+      }
+      resepData[idx].satuan = selSatuan.value;
+      updateSub(); recalc(); persist();
+    });
+    selSatuan.addEventListener('change', () => {
+      resepData[idx].satuan = selSatuan.value;
+      updateSub(); recalc(); persist();
+    });
+    inputQty.addEventListener('input', () => {
+      resepData[idx].qty = parseFloat(inputQty.value) || 0;
+      updateSub(); recalc(); persist();
+    });
+    delBtn.addEventListener('click', () => {
+      resepData.splice(idx, 1);
+      renderRecipeList(); recalc(); persist();
+    });
+
+    row.appendChild(rowTop);
+    row.appendChild(rowBottom);
+    container.appendChild(row);
+  });
+}
+
+// ================= CALCULATIONS =================
+function recalc(){
+  let total = 0;
+  resepData.forEach(item => {
+    const b = getBahanByNamaSatuan(item.nama, item.satuan);
+    const ppu = b ? pricePerUnit(b) : 0;
+    total += ppu * (parseFloat(item.qty) || 0);
+  });
+
+  const yieldPcs = parseFloat(settings.yieldPcs) || 1;
+  const price = parseFloat(settings.price) || 0;
+
+  const hppPcs = total / yieldPcs;
+  const profitPcs = price - hppPcs;
+  const margin = price > 0 ? (profitPcs / price) * 100 : 0;
+  const totalRevenue = price * yieldPcs;
+  const totalProfit = totalRevenue - total;
+
+  document.getElementById('recipeTotal').textContent = fmtRupiah(total);
+  document.getElementById('heroHpp').textContent = fmtRupiah(total);
+  document.getElementById('statHppPcs').textContent = fmtRupiah(hppPcs);
+  document.getElementById('statProfitPcs').textContent = fmtRupiah(profitPcs);
+  document.getElementById('statMargin').textContent = margin.toFixed(1) + '%';
+  document.getElementById('statTotalProfit').textContent = fmtRupiah(totalProfit);
+}
+
+// ================= EVENTS =================
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const current = document.documentElement.getAttribute('data-theme') || 'dark';
+  const next = current === 'dark' ? 'light' : 'dark';
+  applyTheme(next);
+  settings.theme = next;
+  persist();
+});
+
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const target = tab.dataset.tab;
+    document.getElementById('tab-resep').style.display = target === 'resep' ? '' : 'none';
+    document.getElementById('tab-bahan').style.display = target === 'bahan' ? '' : 'none';
+  });
+});
+
+document.getElementById('inputYield').addEventListener('input', e => {
+  settings.yieldPcs = parseFloat(e.target.value) || 1;
+  recalc(); persist();
+});
+document.getElementById('inputPrice').addEventListener('input', e => {
+  settings.price = parseFloat(e.target.value) || 0;
+  recalc(); persist();
+});
+
+document.getElementById('btnAddRecipeRow').addEventListener('click', () => {
+  if(bahanData.length === 0){
+    alert('Belum ada bahan. Tambahkan bahan di tab "Daftar Bahan" dulu.');
+    return;
+  }
+  const firstBahan = bahanData[0];
+  resepData.push({ nama: firstBahan.nama, satuan: firstBahan.satuan, qty: 0 });
+  renderRecipeList(); recalc(); persist();
+});
+
+document.getElementById('newSatuan').addEventListener('change', e => {
+  const customInput = document.getElementById('newSatuanCustom');
+  customInput.style.display = e.target.value === '__custom' ? '' : 'none';
+});
+
+document.getElementById('btnAddBahan').addEventListener('click', () => {
+  const nama = document.getElementById('newNama').value.trim();
+  const harga = parseFloat(document.getElementById('newHarga').value);
+  const total = parseFloat(document.getElementById('newTotal').value);
+  let satuan = document.getElementById('newSatuan').value;
+  if(satuan === '__custom'){
+    satuan = document.getElementById('newSatuanCustom').value.trim();
+  }
+
+  if(!nama){ alert('Nama bahan tidak boleh kosong.'); return; }
+  if(!harga || harga <= 0){ alert('Isi harga beli dengan benar.'); return; }
+  if(!total || total <= 0){ alert('Isi total dalam satuan pakai dengan benar.'); return; }
+  if(!satuan){ alert('Pilih atau isi satuan pakai.'); return; }
+
+  const existingIdx = bahanData.findIndex(b => b.nama === nama && b.satuan === satuan);
+  if(existingIdx >= 0){
+    bahanData[existingIdx] = { nama, harga, total, satuan };
+  }else{
+    bahanData.push({ nama, harga, total, satuan });
+  }
+
+  document.getElementById('newNama').value = '';
+  document.getElementById('newHarga').value = '';
+  document.getElementById('newTotal').value = '';
+  document.getElementById('newSatuan').value = 'gram';
+  document.getElementById('newSatuanCustom').value = '';
+  document.getElementById('newSatuanCustom').style.display = 'none';
+
+  renderBahanList();
+  renderRecipeList();
+  recalc();
+  persist();
+});
+
+loadData();
+</script>
+</body>
+</html>
