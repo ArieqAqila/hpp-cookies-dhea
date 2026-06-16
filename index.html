@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>HPP Cookies</title>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Nunito+Sans:wght@400;600;700;800&display=swap');
 
@@ -231,6 +232,100 @@
     display:inline-block; background:var(--amber-light); color:var(--cocoa);
     font-size:10.5px; font-weight:800; padding:2px 7px; border-radius:6px; margin-left:6px;
   }
+
+  /* Batch rows */
+  .batch-row{
+    display:flex; align-items:flex-start; gap:8px; padding:10px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .batch-row:last-child{ border-bottom:none; }
+  .batch-row-main{ flex:1; min-width:0; }
+  .batch-row-main .b-nama{ font-weight:800; font-size:14px; color:var(--ink); }
+  .batch-row-main .b-meta{ font-size:11.5px; color:var(--muted); margin-top:2px; line-height:1.6; }
+  .batch-row-profit{ font-weight:800; font-size:13px; color:var(--sage); text-align:right; white-space:nowrap; }
+  .batch-row-profit .b-rev{ font-size:11px; color:var(--muted); font-weight:600; }
+  .batch-row-del{
+    width:30px; height:30px; border-radius:50%; border:none; background:var(--rose-light);
+    color:var(--rose); font-size:15px; font-weight:800; cursor:pointer; flex:none;
+    display:flex; align-items:center; justify-content:center; margin-top:2px;
+  }
+  .batch-row-edit{
+    width:30px; height:30px; border-radius:50%; border:none; background:var(--amber-light);
+    color:var(--amber); font-size:13px; cursor:pointer; flex:none;
+    display:flex; align-items:center; justify-content:center; margin-top:2px;
+  }
+  .batch-row-actions{ display:flex; flex-direction:column; gap:4px; }
+  .pcs-terjual-bar{
+    display:flex; align-items:center; gap:6px; margin-top:4px;
+    font-size:11.5px; color:var(--muted);
+  }
+  .pcs-terjual-bar .sold-num{ font-weight:800; color:var(--sage); }
+  .pcs-sisa{ color:var(--rose); font-weight:700; }
+  .hero-stat.act{ background:rgba(156,192,132,.15); }
+  .hero-stat.act .v{ color:#BFE2AE; }
+  .hero-stat.act-modal{ background:rgba(255,255,255,.08); }
+  .hero-stat.act-modal .v{ color:var(--cocoa); }
+
+  /* Filter bar */
+  .filter-bar{ display:flex; flex-direction:column; gap:8px; margin-bottom:12px; }
+  .filter-row{ display:flex; gap:8px; align-items:flex-end; }
+  .filter-row .field{ flex:1; }
+  .filter-row .field label{ font-size:11px; font-weight:700; color:var(--muted); display:block; margin-bottom:3px; }
+  .filter-row .field input, .filter-row .field select{
+    width:100%; padding:8px 10px; border-radius:10px; border:1.5px solid var(--line);
+    font-size:13px; font-weight:700; color:var(--ink); background:var(--input-bg); font-family:inherit;
+  }
+  .filter-row .field input:focus, .filter-row .field select:focus{ outline:none; border-color:var(--amber); }
+  .filter-active-bar{ display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px; }
+  .filter-tag{
+    display:inline-flex; align-items:center; gap:5px; background:var(--amber-light);
+    color:var(--amber); font-size:11.5px; font-weight:700; padding:3px 9px; border-radius:999px;
+  }
+  .btn-filter-reset{
+    border:none; border-radius:10px; padding:8px 12px; font-weight:700; font-size:12px;
+    font-family:inherit; cursor:pointer; background:var(--paper-2); color:var(--muted);
+  }
+
+  /* Floating Action Button */
+  .fab{
+    position:fixed; bottom:24px; right:20px; width:56px; height:56px;
+    border-radius:50%; border:none; background:var(--amber); color:#fff;
+    font-size:26px; font-weight:700; cursor:pointer; z-index:90;
+    box-shadow:0 4px 18px rgba(0,0,0,.28); display:flex; align-items:center;
+    justify-content:center; transition:transform .15s, background .15s;
+  }
+  .fab:hover{ transform:scale(1.08); background:#b6772f; }
+  .fab:active{ transform:scale(.95); }
+
+  /* Recipe row highlight */
+  @keyframes highlightRow {
+    0%  { background: rgba(224,164,88,.35); }
+    100%{ background: transparent; }
+  }
+  .recipe-row.highlight{ animation: highlightRow 2s ease-out forwards; border-radius:10px; }
+  /* SweetAlert2 theming */
+  .swal-popup{
+    border-radius:20px !important; border:1px solid var(--line) !important;
+    font-family:'Nunito Sans', sans-serif !important;
+    padding:20px !important;
+  }
+  .swal-title{
+    font-family:'Fraunces', serif !important; font-weight:700 !important;
+    font-size:18px !important; color:var(--cocoa) !important;
+  }
+  .swal-text{
+    font-size:13.5px !important; color:var(--muted) !important; line-height:1.5 !important;
+  }
+  .swal-confirm-btn{
+    border:none !important; border-radius:12px !important; padding:11px 18px !important;
+    font-weight:800 !important; font-size:14px !important; font-family:inherit !important;
+    color:#fff !important; box-shadow:none !important;
+  }
+  .swal-cancel-btn{
+    border:1.5px solid var(--line) !important; border-radius:12px !important; padding:11px 18px !important;
+    font-weight:800 !important; font-size:14px !important; font-family:inherit !important;
+    color:var(--ink) !important; background:var(--paper-2) !important; box-shadow:none !important;
+  }
 </style>
 </head>
 <body>
@@ -245,6 +340,7 @@
   <div class="tabs">
     <button class="tab active" data-tab="resep">Resep & HPP</button>
     <button class="tab" data-tab="bahan">Daftar Bahan</button>
+    <button class="tab" data-tab="batch">Batch</button>
   </div>
 
   <!-- ===================== TAB: RESEP ===================== -->
@@ -295,7 +391,6 @@
         <span>Total HPP Bahan</span>
         <span class="v" id="recipeTotal">Rp 0</span>
       </div>
-      <button class="btn btn-amber btn-full" id="btnAddRecipeRow">+ Tambah Bahan ke Resep</button>
     </div>
 
   </div>
@@ -308,28 +403,85 @@
       <div id="bahanList"></div>
     </div>
 
-    <div class="card">
-      <h2>➕ Tambah Bahan Baru</h2>
-      <div class="add-form">
-        <input type="text" class="grow" id="newNama" placeholder="Nama bahan, misal: Susu UHT">
-        <input type="number" class="half" id="newHarga" placeholder="Harga beli (Rp)" inputmode="numeric">
-        <input type="number" class="half" id="newTotal" placeholder="Total dalam satuan pakai" inputmode="numeric">
-        <select class="grow" id="newSatuan">
-          <option value="gram">gram</option>
-          <option value="butir">butir</option>
-          <option value="pcs">pcs</option>
-          <option value="lembar">lembar</option>
-          <option value="ml">ml</option>
-          <option value="kg">kg</option>
-          <option value="sdm">sdm</option>
-          <option value="sdt">sdt</option>
-          <option value="__custom">satuan lain...</option>
-        </select>
-        <input type="text" class="grow" id="newSatuanCustom" placeholder="Tulis satuan baru" style="display:none;">
+  </div>
+
+  <!-- ===================== TAB: BATCH ===================== -->
+  <div id="tab-batch" style="display:none;">
+
+    <div class="hero">
+      <div class="label">Total Semua Batch</div>
+      <div class="big" id="batchTotalRevenue">Rp 0</div>
+      <div class="hero-grid">
+        <div class="hero-stat">
+          <div class="l">Total Modal</div>
+          <div class="v" id="batchTotalModal">Rp 0</div>
+        </div>
+        <div class="hero-stat profit">
+          <div class="l">Total Untung (Est.)</div>
+          <div class="v" id="batchTotalProfit">Rp 0</div>
+        </div>
+        <div class="hero-stat">
+          <div class="l">Total Pcs Diproduksi</div>
+          <div class="v" id="batchTotalPcs">0 pcs</div>
+        </div>
+        <div class="hero-stat profit">
+          <div class="l">Margin (Est.)</div>
+          <div class="v" id="batchMargin">0%</div>
+        </div>
+        <div class="hero-stat act-modal">
+          <div class="l">⚡ Act. Modal Terpakai</div>
+          <div class="v" id="batchActModal">Rp 0</div>
+        </div>
+        <div class="hero-stat act">
+          <div class="l">⚡ Act. Untung Terjual</div>
+          <div class="v" id="batchActProfit">Rp 0</div>
+        </div>
+        <div class="hero-stat">
+          <div class="l">Total Pcs Terjual</div>
+          <div class="v" id="batchTotalSold">0 pcs</div>
+        </div>
+        <div class="hero-stat act">
+          <div class="l">⚡ Act. Pendapatan</div>
+          <div class="v" id="batchActRevenue">Rp 0</div>
+        </div>
       </div>
-      <p class="hint" style="margin-top:8px;">Contoh: Susu UHT 1 liter Rp 18.000, dipakai per ml → Harga beli=18000, Total dalam satuan pakai=1000, satuan=ml.</p>
-      <button class="btn btn-amber btn-full" id="btnAddBahan">Simpan Bahan</button>
     </div>
+
+    <div class="card">
+      <h2>📋 Riwayat Batch</h2>
+
+      <div class="filter-bar">
+        <div class="filter-row">
+          <div class="field">
+            <label>Dari Tanggal</label>
+            <input type="date" id="filterDari">
+          </div>
+          <div class="field">
+            <label>Sampai Tanggal</label>
+            <input type="date" id="filterSampai">
+          </div>
+        </div>
+        <div class="filter-row">
+          <div class="field">
+            <label>Urutkan</label>
+            <select id="filterSort">
+              <option value="terbaru">Terbaru</option>
+              <option value="terlama">Terlama</option>
+              <option value="modal_terbesar">Modal Tertinggi</option>
+              <option value="modal_terkecil">Modal Terendah</option>
+              <option value="untung_terbesar">Untung Tertinggi</option>
+              <option value="untung_terkecil">Untung Terendah</option>
+            </select>
+          </div>
+          <button class="btn-filter-reset" id="btnResetFilter">Reset</button>
+        </div>
+      </div>
+
+      <div class="filter-active-bar" id="filterActiveTags" style="display:none;"></div>
+      <div id="batchList"><div class="empty">Belum ada riwayat batch.</div></div>
+      <button class="btn btn-ghost btn-full" id="btnLoadBatch" style="margin-top:10px;">🔄 Muat Riwayat dari Sheet</button>
+    </div>
+
   </div>
 
 </div>
@@ -371,6 +523,95 @@
     <div class="modal-actions">
       <button class="btn btn-ghost" id="btnEditCancel">Batal</button>
       <button class="btn btn-amber" id="btnEditSave">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Floating Action Button -->
+<button class="fab" id="fabBtn" title="Tambah">＋</button>
+
+<!-- Modal Tambah Bahan -->
+<div class="modal-overlay" id="modalTambahBahan">
+  <div class="modal">
+    <h3>➕ Tambah Bahan Baru</h3>
+    <div class="field">
+      <label>Nama Bahan</label>
+      <input type="text" id="newNama" placeholder="Nama bahan, misal: Susu UHT">
+    </div>
+    <div class="field">
+      <label>Harga Beli (Rp)</label>
+      <input type="number" id="newHarga" placeholder="Harga beli" inputmode="numeric">
+    </div>
+    <div class="field">
+      <label>Total dalam Satuan Pakai</label>
+      <input type="number" id="newTotal" placeholder="cth: 1000" inputmode="numeric">
+    </div>
+    <div class="field">
+      <label>Satuan</label>
+      <select id="newSatuan">
+        <option value="gram">gram</option>
+        <option value="butir">butir</option>
+        <option value="pcs">pcs</option>
+        <option value="lembar">lembar</option>
+        <option value="ml">ml</option>
+        <option value="kg">kg</option>
+        <option value="sdm">sdm</option>
+        <option value="sdt">sdt</option>
+        <option value="__custom">satuan lain...</option>
+      </select>
+    </div>
+    <div class="field" id="newSatuanCustomWrap" style="display:none;">
+      <label>Tulis Satuan Baru</label>
+      <input type="text" id="newSatuanCustom" placeholder="Satuan kustom">
+    </div>
+    <p class="hint" style="margin-top:6px;">Contoh: Susu UHT 1 liter Rp 18.000 → Harga beli=18000, Total=1000, satuan=ml.</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="btnCancelTambahBahan">Batal</button>
+      <button class="btn btn-amber" id="btnAddBahan">Simpan Bahan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Input Batch -->
+<div class="modal-overlay" id="modalInputBatch">
+  <div class="modal">
+    <h3 id="modalBatchTitle">📦 Input Batch</h3>
+    <p class="hint">HPP & keuntungan dihitung otomatis dari resep aktif.</p>
+    <div style="display:flex;gap:8px;">
+      <div class="field" style="flex:1">
+        <label>Jumlah Batch</label>
+        <input type="number" id="batchJumlah" inputmode="numeric" placeholder="1" min="1" value="1">
+      </div>
+      <div class="field" style="flex:1">
+        <label>Tanggal Batch</label>
+        <input type="date" id="batchTanggal">
+      </div>
+    </div>
+    <div class="field" style="margin-top:8px;">
+      <label>Pcs Terjual (opsional, isi setelah jual)</label>
+      <input type="number" id="batchPcsTerjual" inputmode="numeric" placeholder="Kosongkan jika belum terjual" min="0">
+    </div>
+    <div class="card" style="margin:10px 0 0;background:var(--paper-2);border-color:var(--line);" id="batchPreview">
+      <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:8px;">PREVIEW (Estimasi)</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div><div style="font-size:11px;color:var(--muted);">Modal</div><div style="font-weight:800;color:var(--ink);" id="prevModal">Rp 0</div></div>
+        <div><div style="font-size:11px;color:var(--muted);">Pendapatan Est.</div><div style="font-weight:800;color:var(--ink);" id="prevRevenue">Rp 0</div></div>
+        <div><div style="font-size:11px;color:var(--muted);">Untung Est.</div><div style="font-weight:800;color:var(--sage);" id="prevProfit">Rp 0</div></div>
+        <div><div style="font-size:11px;color:var(--muted);">Total Pcs</div><div style="font-weight:800;color:var(--ink);" id="prevPcs">0 pcs</div></div>
+      </div>
+      <div id="prevActWrap" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid var(--line);">
+        <div style="font-size:11px;font-weight:700;color:var(--amber);margin-bottom:6px;">⚡ AKTUAL (berdasarkan pcs terjual)</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div><div style="font-size:11px;color:var(--muted);">Act. Pendapatan</div><div style="font-weight:800;color:var(--sage);" id="prevActRevenue">Rp 0</div></div>
+          <div><div style="font-size:11px;color:var(--muted);">Act. Untung</div><div style="font-weight:800;color:var(--sage);" id="prevActProfit">Rp 0</div></div>
+          <div><div style="font-size:11px;color:var(--muted);">Pcs Sisa</div><div style="font-weight:800;color:var(--rose);" id="prevPcsSisa">0 pcs</div></div>
+          <div><div style="font-size:11px;color:var(--muted);">Act. Modal Terpakai</div><div style="font-weight:800;color:var(--ink);" id="prevActModal">Rp 0</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-actions" style="margin-top:10px;">
+      <button class="btn btn-ghost" id="btnCancelBatch">Batal</button>
+      <button class="btn btn-amber" id="btnSimpanBatch">💾 Simpan ke Sheet</button>
     </div>
   </div>
 </div>
@@ -430,6 +671,74 @@ function applyTheme(theme){
   document.getElementById('themeToggle').textContent = theme === 'dark' ? '☀️' : '🌙';
 }
 
+function getThemeVar(name){
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+
+// Reusable styled confirmation modal using SweetAlert2
+function confirmAction({title, text, confirmText = 'Ya, lanjutkan', cancelText = 'Batal', icon = 'question', danger = false}){
+  return Swal.fire({
+    title,
+    text,
+    icon,
+    showCancelButton: true,
+    confirmButtonText: confirmText,
+    cancelButtonText: cancelText,
+    reverseButtons: true,
+    background: getThemeVar('--card-bg'),
+    color: getThemeVar('--ink'),
+    confirmButtonColor: danger ? getThemeVar('--rose') : getThemeVar('--amber'),
+    cancelButtonColor: 'transparent',
+    customClass: {
+      popup: 'swal-popup',
+      title: 'swal-title',
+      htmlContainer: 'swal-text',
+      confirmButton: 'swal-confirm-btn',
+      cancelButton: 'swal-cancel-btn'
+    }
+  }).then(res => res.isConfirmed);
+}
+
+function showLoadingModal(msg = 'Menyimpan...'){
+  Swal.fire({
+    title: msg,
+    html: '<div style="margin-top:6px;font-size:13px;color:var(--muted);">Mohon tunggu sebentar...</div>',
+    allowOutsideClick: false,
+    allowEscapeKey: false,
+    showConfirmButton: false,
+    background: getThemeVar('--card-bg'),
+    color: getThemeVar('--ink'),
+    customClass: { popup: 'swal-popup', title: 'swal-title' },
+    didOpen: () => Swal.showLoading()
+  });
+}
+
+function showSuccessModal(msg = 'Tersimpan!'){
+  Swal.fire({
+    title: msg,
+    icon: 'success',
+    timer: 1200,
+    timerProgressBar: true,
+    showConfirmButton: false,
+    background: getThemeVar('--card-bg'),
+    color: getThemeVar('--ink'),
+    confirmButtonColor: getThemeVar('--amber'),
+    customClass: { popup: 'swal-popup', title: 'swal-title' }
+  });
+}
+
+function showErrorModal(msg = 'Gagal menyimpan'){
+  Swal.fire({
+    title: msg,
+    icon: 'error',
+    timer: 2000,
+    showConfirmButton: false,
+    background: getThemeVar('--card-bg'),
+    color: getThemeVar('--ink'),
+    customClass: { popup: 'swal-popup', title: 'swal-title' }
+  });
+}
+
 let bahanData = [];
 let resepData = [];
 let settings = { ...defaultSettings };
@@ -456,21 +765,27 @@ function getBahanByNamaSatuan(nama, satuan){
 }
 
 let saveTimeout;
-function persist(){
+// loadingMsg: string → tampil loading+success modal (untuk aksi bahan)
+//             null/undefined → silent, pakai showSaveStatus (untuk perubahan resep/settings)
+function persist(loadingMsg){
   clearTimeout(saveTimeout);
+  const useModal = !!loadingMsg;
+  if(useModal) showLoadingModal(loadingMsg);
   saveTimeout = setTimeout(async () => {
     try{
       const payload = { bahan: bahanData, resep: resepData, settings: settings };
       await fetch(GSHEET_URL, {
         method: 'POST',
-        mode: 'no-cors', // hindari CORS error dari redirect Apps Script
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // hindari CORS preflight
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify(payload)
       });
-      showSaveStatus('Tersimpan ke Sheet ✓');
+      if(useModal) showSuccessModal('Tersimpan ke Sheet ✓');
+      else showSaveStatus('Tersimpan ke Sheet ✓');
     }catch(e){
       console.error('Gagal menyimpan:', e);
-      showSaveStatus('Gagal simpan, cek koneksi ⚠️');
+      if(useModal) showErrorModal('Gagal simpan, cek koneksi ⚠️');
+      else showSaveStatus('Gagal simpan, cek koneksi ⚠️');
     }
   }, 600);
 }
@@ -506,6 +821,7 @@ async function loadData(){
   renderBahanList();
   renderRecipeList();
   recalc();
+  loadBatchHistory();
 }
 
 // ================= RENDER BAHAN LIST =================
@@ -539,16 +855,23 @@ function renderBahanList(){
   });
 
   container.querySelectorAll('.row-del').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', async () => {
       const idx = parseInt(btn.dataset.idx);
       const nama = bahanData[idx].nama;
-      if(confirm(`Hapus "${nama}" dari daftar bahan?\n\nCatatan: kalau bahan ini masih dipakai di resep, baris resepnya juga akan dihapus.`)){
+      const ok = await confirmAction({
+        title: 'Hapus bahan?',
+        text: `Hapus "${nama}" dari daftar bahan? Catatan: kalau bahan ini masih dipakai di resep, baris resepnya juga akan dihapus.`,
+        confirmText: 'Hapus',
+        icon: 'warning',
+        danger: true
+      });
+      if(ok){
         bahanData.splice(idx, 1);
         resepData = resepData.filter(r => r.nama !== nama);
         renderBahanList();
         renderRecipeList();
         recalc();
-        persist();
+        persist('Menghapus bahan...');
       }
     });
   });
@@ -643,9 +966,19 @@ function renderRecipeList(){
       resepData[idx].qty = parseFloat(inputQty.value) || 0;
       updateSub(); recalc(); persist();
     });
-    delBtn.addEventListener('click', () => {
-      resepData.splice(idx, 1);
-      renderRecipeList(); recalc(); persist();
+    delBtn.addEventListener('click', async () => {
+      const namaBahan = resepData[idx].nama;
+      const ok = await confirmAction({
+        title: 'Hapus dari resep?',
+        text: `Hapus "${namaBahan}" dari resep?`,
+        confirmText: 'Hapus',
+        icon: 'warning',
+        danger: true
+      });
+      if(ok){
+        resepData.splice(idx, 1);
+        renderRecipeList(); recalc(); persist();
+      }
     });
 
     row.appendChild(rowTop);
@@ -696,6 +1029,8 @@ document.querySelectorAll('.tab').forEach(tab => {
     const target = tab.dataset.tab;
     document.getElementById('tab-resep').style.display = target === 'resep' ? '' : 'none';
     document.getElementById('tab-bahan').style.display = target === 'bahan' ? '' : 'none';
+    document.getElementById('tab-batch').style.display = target === 'batch' ? '' : 'none';
+    if(target === 'batch'){ updateBatchPreview(); renderBatchSummary(); }
   });
 });
 
@@ -708,22 +1043,30 @@ document.getElementById('inputPrice').addEventListener('input', e => {
   recalc(); persist();
 });
 
-document.getElementById('btnAddRecipeRow').addEventListener('click', () => {
+async function addRecipeRow(){
   if(bahanData.length === 0){
-    alert('Belum ada bahan. Tambahkan bahan di tab "Daftar Bahan" dulu.');
+    Swal.fire({ title: 'Belum ada bahan', text: 'Tambahkan bahan di tab "Daftar Bahan" dulu.', icon: 'info', timer: 2000, showConfirmButton: false, background: getThemeVar('--card-bg'), color: getThemeVar('--ink'), customClass:{ popup:'swal-popup', title:'swal-title' } });
     return;
   }
   const firstBahan = bahanData[0];
   resepData.push({ nama: firstBahan.nama, satuan: firstBahan.satuan, qty: 0 });
   renderRecipeList(); recalc(); persist();
-});
+  // Scroll ke bawah & highlight baris terakhir
+  setTimeout(() => {
+    const rows = document.querySelectorAll('#recipeList .recipe-row');
+    if(rows.length === 0) return;
+    const last = rows[rows.length - 1];
+    last.classList.add('highlight');
+    last.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    last.addEventListener('animationend', () => last.classList.remove('highlight'), { once: true });
+  }, 50);
+}
 
 document.getElementById('newSatuan').addEventListener('change', e => {
-  const customInput = document.getElementById('newSatuanCustom');
-  customInput.style.display = e.target.value === '__custom' ? '' : 'none';
+  document.getElementById('newSatuanCustomWrap').style.display = e.target.value === '__custom' ? '' : 'none';
 });
 
-document.getElementById('btnAddBahan').addEventListener('click', () => {
+document.getElementById('btnAddBahan').addEventListener('click', async () => {
   const nama = document.getElementById('newNama').value.trim();
   const harga = parseFloat(document.getElementById('newHarga').value);
   const total = parseFloat(document.getElementById('newTotal').value);
@@ -738,7 +1081,18 @@ document.getElementById('btnAddBahan').addEventListener('click', () => {
   if(!satuan){ alert('Pilih atau isi satuan pakai.'); return; }
 
   const existingIdx = bahanData.findIndex(b => b.nama === nama && b.satuan === satuan);
-  if(existingIdx >= 0){
+  const isUpdate = existingIdx >= 0;
+  const ok = await confirmAction({
+    title: isUpdate ? 'Perbarui bahan?' : 'Tambah bahan?',
+    text: isUpdate
+      ? `Perbarui bahan "${nama}" (${satuan}) dengan data baru?`
+      : `Tambahkan bahan baru "${nama}" (${satuan})?`,
+    confirmText: isUpdate ? 'Perbarui' : 'Tambah',
+    icon: 'question'
+  });
+  if(!ok) return;
+
+  if(isUpdate){
     bahanData[existingIdx] = { nama, harga, total, satuan };
   }else{
     bahanData.push({ nama, harga, total, satuan });
@@ -754,7 +1108,376 @@ document.getElementById('btnAddBahan').addEventListener('click', () => {
   renderBahanList();
   renderRecipeList();
   recalc();
-  persist();
+  document.getElementById('modalTambahBahan').classList.remove('open');
+  persist(isUpdate ? 'Memperbarui bahan...' : 'Menyimpan bahan...');
+});
+
+// ================= BATCH =================
+let batchHistory = []; // loaded from sheet
+
+function calcResepBase(){
+  let total = 0;
+  resepData.forEach(item => {
+    const b = getBahanByNamaSatuan(item.nama, item.satuan);
+    const ppu = b ? pricePerUnit(b) : 0;
+    total += ppu * (parseFloat(item.qty) || 0);
+  });
+  return total; // modal 1 batch
+}
+
+function updateBatchPreview(){
+  const jumlah = parseFloat(document.getElementById('batchJumlah').value) || 1;
+  const pcsTerjual = parseFloat(document.getElementById('batchPcsTerjual').value) || 0;
+  const modalPerBatch = calcResepBase();
+  const yieldPcs = parseFloat(settings.yieldPcs) || 1;
+  const price = parseFloat(settings.price) || 0;
+
+  const totalModal = modalPerBatch * jumlah;
+  const totalPcs = yieldPcs * jumlah;
+  const totalRevenue = price * totalPcs;
+  const totalProfit = totalRevenue - totalModal;
+
+  document.getElementById('prevModal').textContent = fmtRupiah(totalModal);
+  document.getElementById('prevRevenue').textContent = fmtRupiah(totalRevenue);
+  document.getElementById('prevProfit').textContent = fmtRupiah(totalProfit);
+  document.getElementById('prevPcs').textContent = totalPcs.toLocaleString('id-ID') + ' pcs';
+
+  // Aktual jika ada pcs terjual
+  const actWrap = document.getElementById('prevActWrap');
+  if(pcsTerjual > 0){
+    const hppPcs = totalPcs > 0 ? totalModal / totalPcs : 0;
+    const actRevenue = price * pcsTerjual;
+    const actModal = hppPcs * pcsTerjual;
+    const actProfit = actRevenue - actModal;
+    const pcsSisa = totalPcs - pcsTerjual;
+    document.getElementById('prevActRevenue').textContent = fmtRupiah(actRevenue);
+    document.getElementById('prevActProfit').textContent = fmtRupiah(actProfit);
+    document.getElementById('prevPcsSisa').textContent = (pcsSisa > 0 ? pcsSisa : 0).toLocaleString('id-ID') + ' pcs';
+    document.getElementById('prevActModal').textContent = fmtRupiah(actModal);
+    actWrap.style.display = '';
+  } else {
+    actWrap.style.display = 'none';
+  }
+}
+
+// Parse tanggal "16 Jun 2025" / "2025-06-16" → Date object
+function parseTanggalBatch(str){
+  if(!str) return null;
+  // format yyyy-mm-dd
+  if(/^\d{4}-\d{2}-\d{2}$/.test(str)){
+    const [y,m,d] = str.split('-');
+    return new Date(y, m-1, d);
+  }
+  // format "16 Jun 2025" (id-ID)
+  const bulan = {Jan:0,Feb:1,Mar:2,Apr:3,Mei:4,Jun:5,Jul:6,Agu:7,Sep:8,Okt:9,Nov:10,Des:11,
+                 May:4,Aug:7,Oct:9,Dec:11};
+  const parts = str.trim().split(/\s+/);
+  if(parts.length === 3){
+    const d = parseInt(parts[0]), b = bulan[parts[1]], y = parseInt(parts[2]);
+    if(!isNaN(d) && b !== undefined && !isNaN(y)) return new Date(y, b, d);
+  }
+  return null;
+}
+
+function getFilteredBatch(){
+  const dari   = document.getElementById('filterDari')?.value || '';
+  const sampai = document.getElementById('filterSampai')?.value || '';
+  const sort   = document.getElementById('filterSort')?.value || 'terbaru';
+
+  let list = batchHistory.map((h, i) => ({ ...h, _idx: i }));
+
+  // Filter tanggal
+  if(dari){
+    const tDari = new Date(dari);
+    list = list.filter(h => { const t = parseTanggalBatch(h.tanggal); return t && t >= tDari; });
+  }
+  if(sampai){
+    const tSampai = new Date(sampai); tSampai.setHours(23,59,59);
+    list = list.filter(h => { const t = parseTanggalBatch(h.tanggal); return t && t <= tSampai; });
+  }
+
+  // Sort
+  list.sort((a, b) => {
+    if(sort === 'terbaru') return b._idx - a._idx;
+    if(sort === 'terlama') return a._idx - b._idx;
+    if(sort === 'modal_terbesar') return (b.modal||0) - (a.modal||0);
+    if(sort === 'modal_terkecil') return (a.modal||0) - (b.modal||0);
+    const pa = (a.revenue||0)-(a.modal||0), pb = (b.revenue||0)-(b.modal||0);
+    if(sort === 'untung_terbesar') return pb - pa;
+    if(sort === 'untung_terkecil') return pa - pb;
+    return 0;
+  });
+
+  return { list, dari, sampai, sort };
+}
+
+function renderFilterActiveTags(dari, sampai, sort){
+  const bar = document.getElementById('filterActiveTags');
+  const tags = [];
+  if(dari) tags.push(`📅 Dari: ${new Date(dari).toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'})}`);
+  if(sampai) tags.push(`📅 Sampai: ${new Date(sampai).toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'})}`);
+  if(sort && sort !== 'terbaru'){
+    const label = {terlama:'Terlama',modal_terbesar:'Modal Tertinggi',modal_terkecil:'Modal Terendah',untung_terbesar:'Untung Tertinggi',untung_terkecil:'Untung Terendah'};
+    tags.push(`↕️ ${label[sort]||sort}`);
+  }
+  if(tags.length === 0){ bar.style.display='none'; bar.innerHTML=''; return; }
+  bar.style.display='flex';
+  bar.innerHTML = tags.map(t => `<span class="filter-tag">${t}</span>`).join('');
+}
+
+function renderBatchSummary(){
+  // Hero: aggregate SEMUA batch (tidak terpengaruh filter)
+  let totalModal = 0, totalRevenue = 0, totalPcs = 0, totalSold = 0;
+  batchHistory.forEach(h => {
+    totalModal += h.modal || 0;
+    totalRevenue += h.revenue || 0;
+    totalPcs += h.pcs || 0;
+    totalSold += h.pcsTerjual || 0;
+  });
+  const totalProfit = totalRevenue - totalModal;
+  const margin = totalRevenue > 0 ? (totalProfit / totalRevenue) * 100 : 0;
+
+  // Aktual: hitung berdasarkan pcs terjual per batch
+  let actRevenue = 0, actModal = 0;
+  batchHistory.forEach(h => {
+    const sold = h.pcsTerjual || 0;
+    if(sold > 0 && h.pcs > 0){
+      const hppPcs = (h.modal || 0) / h.pcs;
+      const price = (h.revenue || 0) / h.pcs;
+      actRevenue += price * sold;
+      actModal += hppPcs * sold;
+    }
+  });
+  const actProfit = actRevenue - actModal;
+
+  document.getElementById('batchTotalRevenue').textContent = fmtRupiah(totalRevenue);
+  document.getElementById('batchTotalModal').textContent = fmtRupiah(totalModal);
+  document.getElementById('batchTotalProfit').textContent = fmtRupiah(totalProfit);
+  document.getElementById('batchTotalPcs').textContent = totalPcs.toLocaleString('id-ID') + ' pcs';
+  document.getElementById('batchMargin').textContent = margin.toFixed(1) + '%';
+  document.getElementById('batchTotalSold').textContent = totalSold.toLocaleString('id-ID') + ' pcs';
+  document.getElementById('batchActRevenue').textContent = fmtRupiah(actRevenue);
+  document.getElementById('batchActModal').textContent = fmtRupiah(actModal);
+  document.getElementById('batchActProfit').textContent = fmtRupiah(actProfit);
+
+  // Render list dengan filter
+  const { list, dari, sampai, sort } = getFilteredBatch();
+  renderFilterActiveTags(dari, sampai, sort);
+
+  const container = document.getElementById('batchList');
+  if(batchHistory.length === 0){
+    container.innerHTML = '<div class="empty">Belum ada riwayat batch.</div>';
+    return;
+  }
+  if(list.length === 0){
+    container.innerHTML = '<div class="empty">Tidak ada data yang cocok dengan filter.</div>';
+    return;
+  }
+  container.innerHTML = '';
+  list.forEach(h => {
+    const profit = (h.revenue || 0) - (h.modal || 0);
+    const realIdx = h._idx;
+    const sold = h.pcsTerjual || 0;
+    const pcsSisa = (h.pcs || 0) - sold;
+    const hppPcs = h.pcs > 0 ? (h.modal || 0) / h.pcs : 0;
+    const pricePerPcs = h.pcs > 0 ? (h.revenue || 0) / h.pcs : 0;
+    const actRev = pricePerPcs * sold;
+    const actMod = hppPcs * sold;
+    const actPft = actRev - actMod;
+
+    const soldTag = sold > 0
+      ? `<span class="sold-num">✅ ${sold.toLocaleString('id-ID')} terjual</span>${pcsSisa > 0 ? ` · <span class="pcs-sisa">${pcsSisa.toLocaleString('id-ID')} sisa</span>` : ' · <span style="color:var(--sage);font-weight:700;">habis terjual!</span>'}`
+      : `<span style="color:var(--faint);">Belum ada penjualan</span>`;
+
+    const actLine = sold > 0
+      ? `<div style="margin-top:3px;font-size:11px;color:var(--muted);">⚡ Act: ${fmtRupiah(actRev)} pendapatan · Untung ${fmtRupiah(actPft)}</div>`
+      : '';
+
+    const div = document.createElement('div');
+    div.className = 'batch-row';
+    div.innerHTML = `
+      <div class="batch-row-main">
+        <div class="b-nama">${h.jumlah} Batch <span style="font-weight:600;color:var(--muted);font-size:12px;">${h.tanggal || ''}</span></div>
+        <div class="b-meta">
+          ${(h.pcs||0).toLocaleString('id-ID')} pcs diproduksi &nbsp;·&nbsp; Modal ${fmtRupiah(h.modal)}
+        </div>
+        <div class="pcs-terjual-bar">${soldTag}</div>
+        ${actLine}
+      </div>
+      <div class="batch-row-profit">
+        +${fmtRupiah(profit)}
+        <div class="b-rev">${fmtRupiah(h.revenue)}</div>
+      </div>
+      <div class="batch-row-actions">
+        <button class="batch-row-edit" title="Ubah batch ini" data-idx="${realIdx}">✏️</button>
+        <button class="batch-row-del" title="Hapus batch ini" data-idx="${realIdx}">✕</button>
+      </div>
+    `;
+    div.querySelector('.batch-row-del').addEventListener('click', () => hapusBatch(realIdx));
+    div.querySelector('.batch-row-edit').addEventListener('click', () => openEditBatch(realIdx));
+    container.appendChild(div);
+  });
+}
+
+async function hapusBatch(idx){
+  const h = batchHistory[idx];
+  if(!h) return;
+  const profit = (h.revenue||0)-(h.modal||0);
+  const ok = await confirmAction({
+    title: 'Hapus batch ini?',
+    text: `${h.jumlah} batch · ${h.tanggal} · Untung ${fmtRupiah(profit)}`,
+    confirmText: 'Hapus',
+    icon: 'warning',
+    danger: true
+  });
+  if(!ok) return;
+
+  showLoadingModal('Menghapus batch...');
+  try{
+    await fetch(GSHEET_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'deleteBatch', index: idx })
+    });
+    batchHistory.splice(idx, 1);
+    renderBatchSummary();
+    showSuccessModal('Batch dihapus ✓');
+  }catch(e){
+    console.error(e);
+    showErrorModal('Gagal hapus batch ⚠️');
+  }
+}
+
+let editBatchIdx = -1; // -1 = tambah baru, >= 0 = edit
+
+async function simpanBatch(){
+  const jumlah = parseFloat(document.getElementById('batchJumlah').value) || 1;
+  const pcsTerjual = parseFloat(document.getElementById('batchPcsTerjual').value) || 0;
+  const modalPerBatch = calcResepBase();
+  const yieldPcs = parseFloat(settings.yieldPcs) || 1;
+  const price = parseFloat(settings.price) || 0;
+
+  const totalModal = modalPerBatch * jumlah;
+  const totalPcs = yieldPcs * jumlah;
+  const totalRevenue = price * totalPcs;
+
+  const tanggalInput = document.getElementById('batchTanggal').value;
+  let tanggal;
+  if(tanggalInput){
+    const [y, m, d] = tanggalInput.split('-');
+    tanggal = new Date(y, m - 1, d).toLocaleDateString('id-ID', {day:'2-digit',month:'short',year:'numeric'});
+  } else {
+    tanggal = new Date().toLocaleDateString('id-ID', {day:'2-digit',month:'short',year:'numeric'});
+  }
+
+  const isEdit = editBatchIdx >= 0;
+  const entry = { jumlah, modal: totalModal, revenue: totalRevenue, pcs: totalPcs, pcsTerjual, tanggal };
+
+  const ok = await confirmAction({
+    title: isEdit ? 'Simpan perubahan batch?' : 'Simpan batch?',
+    text: isEdit
+      ? `Perbarui batch (${tanggal}) → ${jumlah} batch, ${pcsTerjual > 0 ? pcsTerjual + ' pcs terjual' : 'belum ada penjualan'}?`
+      : `Simpan ${jumlah} batch (${tanggal}) ke Sheet?`,
+    confirmText: 'Simpan',
+    icon: 'question'
+  });
+  if(!ok) return;
+
+  showLoadingModal(isEdit ? 'Memperbarui batch...' : 'Menyimpan batch...');
+  try{
+    if(isEdit){
+      await fetch(GSHEET_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'updateBatch', index: editBatchIdx, batch: entry })
+      });
+      batchHistory[editBatchIdx] = entry;
+    } else {
+      await fetch(GSHEET_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'saveBatch', batch: entry })
+      });
+      batchHistory.push(entry);
+    }
+    renderBatchSummary();
+    document.getElementById('batchJumlah').value = '1';
+    document.getElementById('batchPcsTerjual').value = '';
+    setDefaultBatchTanggal();
+    updateBatchPreview();
+    document.getElementById('modalInputBatch').classList.remove('open');
+    showSuccessModal(isEdit ? 'Batch diperbarui ✓' : 'Batch tersimpan ke Sheet ✓');
+  }catch(e){
+    console.error(e);
+    showErrorModal('Gagal simpan batch ⚠️');
+  }
+}
+
+async function loadBatchHistory(){
+  try{
+    const res = await fetch(GSHEET_URL + '?action=getBatch');
+    const data = await res.json();
+    if(Array.isArray(data.batch)) batchHistory = data.batch;
+    renderBatchSummary();
+  }catch(e){
+    console.error('Gagal muat riwayat batch:', e);
+  }
+}
+
+document.getElementById('batchJumlah').addEventListener('input', updateBatchPreview);
+document.getElementById('batchPcsTerjual').addEventListener('input', updateBatchPreview);
+document.getElementById('btnSimpanBatch').addEventListener('click', simpanBatch);
+
+function openEditBatch(idx){
+  const h = batchHistory[idx];
+  if(!h) return;
+  editBatchIdx = idx;
+  document.getElementById('modalBatchTitle').textContent = '✏️ Ubah Batch';
+  document.getElementById('batchJumlah').value = h.jumlah || 1;
+  document.getElementById('batchPcsTerjual').value = h.pcsTerjual || '';
+
+  // Convert tanggal string ke yyyy-mm-dd untuk input date
+  const tgl = parseTanggalBatch(h.tanggal);
+  if(tgl){
+    const yyyy = tgl.getFullYear();
+    const mm = String(tgl.getMonth()+1).padStart(2,'0');
+    const dd = String(tgl.getDate()).padStart(2,'0');
+    document.getElementById('batchTanggal').value = `${yyyy}-${mm}-${dd}`;
+  } else {
+    setDefaultBatchTanggal();
+  }
+  updateBatchPreview();
+  document.getElementById('modalInputBatch').classList.add('open');
+}
+
+function setDefaultBatchTanggal(){
+  const el = document.getElementById('batchTanggal');
+  const now = new Date();
+  const yyyy = now.getFullYear();
+  const mm = String(now.getMonth() + 1).padStart(2, '0');
+  const dd = String(now.getDate()).padStart(2, '0');
+  el.value = `${yyyy}-${mm}-${dd}`;
+}
+setDefaultBatchTanggal();
+
+document.getElementById('btnLoadBatch').addEventListener('click', () => {
+  showSaveStatus('Memuat riwayat...');
+  loadBatchHistory();
+});
+
+// Filter listeners
+['filterDari','filterSampai','filterSort'].forEach(id => {
+  document.getElementById(id)?.addEventListener('change', renderBatchSummary);
+});
+
+document.getElementById('btnResetFilter').addEventListener('click', () => {
+  document.getElementById('filterDari').value = '';
+  document.getElementById('filterSampai').value = '';
+  document.getElementById('filterSort').value = 'terbaru';
+  renderBatchSummary();
 });
 
 // ================= EDIT MODAL =================
@@ -796,7 +1519,7 @@ document.getElementById('editModal').addEventListener('click', e => {
   }
 });
 
-document.getElementById('btnEditSave').addEventListener('click', () => {
+document.getElementById('btnEditSave').addEventListener('click', async () => {
   if(editIdx < 0) return;
   const nama = document.getElementById('editNama').value.trim();
   const harga = parseFloat(document.getElementById('editHarga').value);
@@ -811,6 +1534,14 @@ document.getElementById('btnEditSave').addEventListener('click', () => {
   if(!total || total <= 0){ alert('Isi total dengan benar.'); return; }
   if(!satuan){ alert('Pilih atau isi satuan.'); return; }
 
+  const ok = await confirmAction({
+    title: 'Simpan perubahan?',
+    text: `Simpan perubahan untuk bahan "${nama}"?`,
+    confirmText: 'Simpan',
+    icon: 'question'
+  });
+  if(!ok) return;
+
   const oldNama = bahanData[editIdx].nama;
   // Update resepData kalau nama berubah
   if(oldNama !== nama){
@@ -822,8 +1553,67 @@ document.getElementById('btnEditSave').addEventListener('click', () => {
   renderBahanList();
   renderRecipeList();
   recalc();
-  persist();
+  persist('Menyimpan perubahan...');
 });
+
+// ── FAB & MODAL LOGIC ──
+let activeTab = 'resep';
+
+// Track tab aktif
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    activeTab = tab.dataset.tab;
+  });
+}, true); // capture phase agar jalan sebelum listener lain
+
+document.getElementById('fabBtn').addEventListener('click', () => {
+  if(activeTab === 'resep'){
+    addRecipeRow();
+  } else if(activeTab === 'bahan'){
+    // Reset form
+    document.getElementById('newNama').value = '';
+    document.getElementById('newHarga').value = '';
+    document.getElementById('newTotal').value = '';
+    document.getElementById('newSatuan').value = 'gram';
+    document.getElementById('newSatuanCustom').value = '';
+    document.getElementById('newSatuanCustomWrap').style.display = 'none';
+    document.getElementById('modalTambahBahan').classList.add('open');
+    setTimeout(() => document.getElementById('newNama').focus(), 100);
+  } else if(activeTab === 'batch'){
+    editBatchIdx = -1;
+    document.getElementById('modalBatchTitle').textContent = '📦 Input Batch';
+    setDefaultBatchTanggal();
+    document.getElementById('batchJumlah').value = '1';
+    document.getElementById('batchPcsTerjual').value = '';
+    updateBatchPreview();
+    document.getElementById('modalInputBatch').classList.add('open');
+  }
+});
+
+// Modal tambah bahan close
+document.getElementById('btnCancelTambahBahan').addEventListener('click', () => {
+  document.getElementById('modalTambahBahan').classList.remove('open');
+});
+document.getElementById('modalTambahBahan').addEventListener('click', e => {
+  if(e.target === document.getElementById('modalTambahBahan'))
+    document.getElementById('modalTambahBahan').classList.remove('open');
+});
+
+// Modal batch close
+document.getElementById('btnCancelBatch').addEventListener('click', () => {
+  editBatchIdx = -1;
+  document.getElementById('modalInputBatch').classList.remove('open');
+});
+document.getElementById('modalInputBatch').addEventListener('click', e => {
+  if(e.target === document.getElementById('modalInputBatch')){
+    editBatchIdx = -1;
+    document.getElementById('modalInputBatch').classList.remove('open');
+  }
+});
+
+// Tutup modal batch setelah simpan berhasil — hook ke showSuccessModal
+const _origSimpanBatch = simpanBatch;
+// (simpanBatch sudah defined di atas, kita tambah close modal setelah success)
 
 loadData();
 </script>
